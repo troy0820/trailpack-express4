@@ -49,4 +49,5 @@ module.exports = class Express4 extends Trailpack {
 			pkg: require('./package')
 		})
 	}
+
 }
