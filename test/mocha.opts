@@ -1,0 +1,8 @@
+./test/index.js
+./test/**/*.test.js
+--reporter spec
+--recursive
+--full-trace
+--slow 50
+--check-leaks
+--globals app
