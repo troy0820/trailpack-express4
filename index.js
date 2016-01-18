@@ -3,9 +3,9 @@
  */
 'use strict'
 
-const Trailpack = require('trailpack')
 const lib = require('./lib')
 const _ = require('lodash')
+const WebServerTrailpack = require('trailpack-webserver')
 
 /**
  * Express4 Trailpack
@@ -15,7 +15,7 @@ const _ = require('lodash')
  *
  * Bind application routes to Express4.js (from trailpack-router)
  */
-module.exports = class Express4 extends Trailpack {
+module.exports = class Express4 extends WebServerTrailpack {
 
 <<<<<<< HEAD
 	/**
@@ -56,7 +56,7 @@ module.exports = class Express4 extends Trailpack {
    * server trailpacks are installed (e.g. express)
    */
   validate() {
-    if (_.contains(_.keys(this.app.config.main.packs), 'express4', 'koa', 'koa2', 'restify')) {
+    if (_.includes(_.keys(this.app.config.main.packs), 'express4', 'koa', 'koa2', 'restify')) {
       return Promise.reject(new Error('There is another web services trailpack installed that conflicts with trailpack-hapi!'))
     }
 
@@ -65,11 +65,15 @@ module.exports = class Express4 extends Trailpack {
     ])
   }
 
+  configure() {
+    this.app.config.web.server = 'express4'
+  }
+
   /**
    * Start Express4 Server
    */
   initialize() {
-    const server = lib.Server.createServer(this.app.config.web)
+    const server = lib.Server.createServer(this.app)
 
     lib.Server.registerMethods(this.app, server)
     lib.Server.registerRoutes(this.app, server)

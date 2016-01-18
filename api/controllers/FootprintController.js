@@ -1,5 +1,5 @@
 'use strict'
-
+const Controller = require('trails-controller')
 /**
  * Footprint Controller
  *
@@ -9,26 +9,30 @@
  *
  * @see {@link http://expressjs.com/en/4x/api.html#req}
  */
-module.exports = {
+module.exports = class FootprintController extends Controller{
   create (req, res) {
-    const FootprintService = this.api.services.FootprintService
-    FootprintService.create(req.params.model, req.body)
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+
+    FootprintService.create(req.params.model, req.body, options)
       .then(function (elements) {
         res.status(201).json(elements)
       }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   find (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
     const id = req.params.id
 
     let response
     if (id) {
-      response = FootprintService.find(req.params.model, id, {findOne: true})
+      response = FootprintService.find(req.params.model, id, options)
     }
     else {
-      response = FootprintService.find(req.params.model, req.query)
+      response = FootprintService.find(req.params.model, criteria, options)
     }
 
     response.then(function (elements) {
@@ -36,17 +40,24 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   update (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
+
     const id = req.params.id
+
+    this.log.debug('[FootprintController] (update) model =',
+      req.params.model, ', criteria =', req.query, req.params.id,
+      ', values = ', req.body)
 
     let response
     if (id) {
-      response = FootprintService.update(req.params.model, id, req.body, {findOne: true})
+      response = FootprintService.update(req.params.model, id, req.body, options)
     }
     else {
-      response = FootprintService.update(req.params.model, req.query, req.body)
+      response = FootprintService.update(req.params.model, criteria, req.body)
     }
 
     response.then(function (elements) {
@@ -54,17 +65,19 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   destroy (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
     const id = req.params.id
 
     let response
     if (id) {
-      response = FootprintService.destroy(req.params.model, id, {findOne: true})
+      response = FootprintService.destroy(req.params.model, id, options)
     }
     else {
-      response = FootprintService.destroy(req.params.model, req.query)
+      response = FootprintService.destroy(req.params.model, criteria, options)
     }
 
     response.then(function (elements) {
@@ -72,18 +85,22 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   createAssociation (req, res) {
-    const FootprintService = this.api.services.FootprintService
-    FootprintService.createAssociation(req.params.parentModel, req.params.parentId, req.params.childAttribute, req.body)
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+
+    FootprintService.createAssociation(req.params.parentModel, req.params.parentId, req.params.childAttribute, req.body, options)
       .then(function (elements) {
         res.status(201).json(elements)
       }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   findAssociation (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
     const parentModel = req.params.parentModel
     const parentId = req.params.parentId
     const childAttribute = req.params.childAttribute
@@ -91,10 +108,10 @@ module.exports = {
 
     let response
     if (childId) {
-      response = FootprintService.findAssociation(parentModel, parentId, childAttribute, childId, {findOne: true})
+      response = FootprintService.findAssociation(parentModel, parentId, childAttribute, childId, options)
     }
     else {
-      response = FootprintService.findAssociation(parentModel, parentId, childAttribute, req.query)
+      response = FootprintService.findAssociation(parentModel, parentId, childAttribute, criteria, options)
     }
 
     response.then(function (elements) {
@@ -102,10 +119,11 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-
-  },
+  }
   updateAssociation (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
     const parentModel = req.params.parentModel
     const parentId = req.params.parentId
     const childAttribute = req.params.childAttribute
@@ -113,10 +131,10 @@ module.exports = {
 
     let response
     if (childId) {
-      response = FootprintService.updateAssociation(parentModel, parentId, childAttribute, childId, req.body, {findOne: true})
+      response = FootprintService.updateAssociation(parentModel, parentId, childAttribute, childId, req.body, options)
     }
     else {
-      response = FootprintService.updateAssociation(parentModel, parentId, childAttribute, req.query, req.body)
+      response = FootprintService.updateAssociation(parentModel, parentId, childAttribute, criteria, req.body, options)
     }
 
     response.then(function (elements) {
@@ -124,9 +142,11 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-  },
+  }
   destroyAssociation (req, res) {
-    const FootprintService = this.api.services.FootprintService
+    const FootprintService = this.app.services.FootprintService
+    const options = this.app.packs.express4.getOptionsFromQuery(req.query)
+    const criteria = this.app.packs.express4.getCriteriaFromQuery(req.query)
     const parentModel = req.params.parentModel
     const parentId = req.params.parentId
     const childAttribute = req.params.childAttribute
@@ -134,10 +154,10 @@ module.exports = {
 
     let response
     if (childId) {
-      response = FootprintService.destroyAssociation(parentModel, parentId, childAttribute, childId, {findOne: true})
+      response = FootprintService.destroyAssociation(parentModel, parentId, childAttribute, childId, options)
     }
     else {
-      response = FootprintService.destroyAssociation(parentModel, parentId, childAttribute, req.query)
+      response = FootprintService.destroyAssociation(parentModel, parentId, childAttribute, criteria, options)
     }
 
     response.then(function (elements) {
@@ -145,6 +165,5 @@ module.exports = {
     }).catch(function (error) {
       res.boom.wrap(error)
     })
-
   }
 }
