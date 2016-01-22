@@ -10,10 +10,18 @@ describe('express4 controllers', () => {
   })
   describe('DefaultController', () => {
     describe('info', () => {
+      it('should return 404 on GET /default', (done) => {
+        request
+          .get('/default')
+          .expect(404)
+          .end((err, res) => {
+            done(err)
+          })
+      })
       it('should return {app: \'1.0.0\'} on GET /default/info', (done) => {
         request
           .get('/default/info')
-          .expect(200 | 201)
+          .expect(200)
           .end((err, res) => {
             const data = res.body
             assert.deepEqual(data, {app: '1.0.0'})
@@ -24,7 +32,7 @@ describe('express4 controllers', () => {
         request
           .post('/default/info')
           .send({test: 'ok'})
-          .expect(200 | 201)
+          .expect(200)
           .end((err, res) => {
             const data = res.body
             assert.deepEqual(data, {test: 'ok'})

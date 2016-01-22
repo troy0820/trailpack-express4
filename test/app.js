@@ -28,7 +28,7 @@ const App = {
       }
     },
     footprints: {
-      controllers: true,
+      controllers: false,
       models: {
 
         actions: {
@@ -47,7 +47,7 @@ const App = {
           destroyAssociation: true
         }
       },
-      prefix: ''
+      prefix: '/api/v1'
     },
     i18n: {
       lng: 'en',
@@ -76,6 +76,26 @@ const App = {
         method: ['POST', 'PUT'],
         path: '/default/info',
         handler: 'DefaultController.echo'
+      },
+      {
+        method: ['GET'],
+        path: '/default/info',
+        handler: 'DefaultController.info'
+      },
+      {
+        method: ['GET'],
+        path: '/default/policySuccess',
+        handler: 'DefaultController.policySuccess'
+      },
+      {
+        method: ['GET'],
+        path: '/default/policyFail',
+        handler: 'DefaultController.policyFail'
+      },
+      {
+        method: ['GET'],
+        path: '/default/policyIntercept',
+        handler: 'DefaultController.policyIntercept'
       }
     ],
     policies: {
